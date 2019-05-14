@@ -21,14 +21,15 @@ public class Controller : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // Should these be world space?
         if (Input.GetKey(KeyCode.A))
             Move(target.transform.right * -1);
         if (Input.GetKey(KeyCode.D))
             Move(target.transform.right);
         if (Input.GetKey(KeyCode.W))
-            Move(target.transform.forward);
-        if (Input.GetKey(KeyCode.S))
             Move(target.transform.forward * -1);
+        if (Input.GetKey(KeyCode.S))
+            Move(target.transform.forward);
         if (Input.GetKey(KeyCode.Q))
             Move(target.transform.up);
         if (Input.GetKey(KeyCode.E))
@@ -88,8 +89,12 @@ public class Controller : MonoBehaviour
     void Move(Vector3 offset)
     {
         float moveSpeed = speed;
-        if (target == gameObject)
+        if (target == gameObject) {
             moveSpeed *= 3;
+            // Hack to make WASD work as normal on the player, but on a 90 degree turn for wands
+            if (Mathf.Abs(Vector3.Dot(offset, target.transform.forward)) > 0.5f)
+                offset *= -1;
+        }   
         target.transform.position += offset * moveSpeed;
     }
 }
