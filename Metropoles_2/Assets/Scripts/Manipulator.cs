@@ -6,7 +6,7 @@ public class Manipulator : Pointer
 {
 
     // Are we grabbing anything currently? What is it?
-    public Grabable grabbed;
+    public Grabable grabbed;    
 
     // Start is called before the first frame update
     new void Start()
@@ -44,10 +44,14 @@ public class Manipulator : Pointer
     void Grab()
     {
         Debug.Log("Grabbing");
-        if (grabbed != null || currentPointee == null)
+        if (grabbed != null || currentPointee == null) 
+        {
+            Debug.Log("Not pointing at anything or already grabbing something.");
             return;
+        }
         else
         {
+            Debug.Log("Grabbed " + currentPointee.name + "!");
             grabbed = currentPointee;
             grabbed.Grab(this);
             shouldPoint = false;

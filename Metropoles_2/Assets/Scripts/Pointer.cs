@@ -105,7 +105,6 @@ public class Pointer : MonoBehaviour
             {
                 closestGrabDistance = DistanceToPoint(intersectionPoint.Value);
                 closestGrabable = grabable;
-                
             }
         }
 

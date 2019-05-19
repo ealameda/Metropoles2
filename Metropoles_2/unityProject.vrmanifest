@@ -5,7 +5,7 @@
       "app_key": "application.generated.unity.metropoles_2.exe",
       "launch_type": "url",
       "url": "steam://launch/",
-      "action_manifest_path": "C:\\Users\\sayva\\Code\\MetropolesRedux\\Metropoles_2\\actions.json",
+      "action_manifest_path": "C:\\Users\\sayva\\Code\\Metropoles_2\\Metropoles_2\\actions.json",
       "strings": {
         "en_us": {
           "name": "Metropoles_2 [Testing]"

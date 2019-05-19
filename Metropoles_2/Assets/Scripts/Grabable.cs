@@ -29,6 +29,7 @@ public class Grabable : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        gameObject.tag = "Grabable";
         eventManager = GameObject.FindObjectOfType<EventManager>();
         highlighters = new List<Pointer>();
         InitializeScripts();
@@ -64,10 +65,16 @@ public class Grabable : MonoBehaviour
         Vector3 towardsTarget = (targetToFace - transform.position).normalized;
         Vector3 axis = Vector3.Cross(transform.forward, towardsTarget);
 
+        // Add torque to look towards the target
         Quaternion q = transform.rotation * rigid.inertiaTensorRotation;
-        Vector3 Torque = q * Vector3.Scale(rigid.inertiaTensor, (Quaternion.Inverse(q)*axis ));
+        Vector3 Torque = q * Vector3.Scale(rigid.inertiaTensor, (Quaternion.Inverse(q)*axis));
         
         rigid.AddTorque(Torque);
+
+        // Add torque to get the object to be upright
+        Vector3 axisToUp = Vector3.Cross(transform.up, Vector3.up);
+        Vector3 torqueToUp = q * Vector3.Scale(rigid.inertiaTensor, (Quaternion.Inverse(q)*axisToUp));
+        rigid.AddTorque(torqueToUp);
     }
 
     // Reports highlights or unhighlights and triggers events. j   
