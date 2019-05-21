@@ -6,12 +6,10 @@ public class UserPortalDrawer : MonoBehaviour
 {
     // Are we drawing the portal
     public bool isDrawing;
-    // 
-    public List<Vector3> positions;
     // The portal we are actually drawing
     public GameObject portal;
-    // The renderer on the portal.
-    LineRenderer portalRenderer;
+    // The UserPortal script on the portal.
+    UserPortal portalScript;
 
     public float minPortalLength;
     public float maxPortalGap;
@@ -22,7 +20,6 @@ public class UserPortalDrawer : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        positions = new List<Vector3>();
     }
 
     // Update is called once per frame
@@ -30,61 +27,25 @@ public class UserPortalDrawer : MonoBehaviour
     {
         if (portal != null)
         {
-            positions.Add(transform.position); 
-            portalRenderer.positionCount = positions.Count;
-            portalRenderer.SetPositions(positions.ToArray());
-        }    
-               
+            portalScript.AddPoint(transform.position);
+        }                   
     }
 
     void StartDrawing()
     {
         portal = new GameObject("UserPortal");
-        portalRenderer = portal.AddComponent<LineRenderer>();
-        portalRenderer.material = gameObject.GetComponent<Pointer>().lineMaterial;  
-        portalRenderer.startWidth = 0.01f;
-        portalRenderer.endWidth = 0.01f;
-        portalRenderer.startColor = Color.red;
-        portalRenderer.endColor = Color.yellow;
+        portalScript = portal.AddComponent<UserPortal>();
+        Debug.Log("Setting mats");
+        portalScript.SetMaterials(gameObject.GetComponent<Pointer>().lineMaterial,
+                                  gameObject.GetComponent<Pointer>().lineMaterial);
     }
 
     void StopDrawing()
     {
-        Destroy(portal);
-
-        // If portal is long enough
-        float totalLength = 0;
-        for (int i = 0 ; i < positions.Count - 1; i++)
-        {
-            totalLength += (positions[i] - positions[i+1]).magnitude;
-        }
-        if (totalLength < minPortalLength)
-        {
-            Debug.Log("Portal only " + totalLength + " long");
-            positions.Clear();
-            return;
-        }
-        
-        float portalGap = (positions[0] - positions[positions.Count-1]).magnitude;
-        if (portalGap > maxPortalGap)
-        {
-            Debug.Log("Portal gap is too large at " + portalGap);
-            positions.Clear();
-            return;
-        }
-
-        Vector3 averagePosition = new Vector3();
-        for (int i = 0 ; i < positions.Count; i++)
-        {
-            averagePosition += positions[i];
-        }
-        averagePosition /= positions.Count;
-
-        GameObject newUserPortal = GameObject.Instantiate(UserPortalPrefab);
-        newUserPortal.transform.position = averagePosition;
-        newUserPortal.transform.LookAt(gameObject.transform.parent.position);
-
-        positions.Clear();
+        portalScript.FinishDrawing();
+        // The portal now lives its own life.
+        portal = null;
+        portalScript = null;
     }
 
     public void StartOrStop()
